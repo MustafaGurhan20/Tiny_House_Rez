@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rezervasyonlarım</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-purple-800 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Kiracı</h1>
+    <nav class="space-y-2">
+      <a href="/tenant/dashboard" class="block hover:bg-purple-600 p-2 rounded">Anasayfa</a>
+      <a href="/tenant/explore" class="block hover:bg-purple-600 p-2 rounded">Ev Ara</a>
+      <a href="/tenant/reservations" class="block bg-purple-700 p-2 rounded">Rezervasyonlarım</a>
+      <a href="/tenant/comments" class="block hover:bg-purple-600 p-2 rounded">Yorumlarım</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6 space-y-6">
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Rezervasyonlarım</h2>
+      <table class="w-full text-left bg-white rounded shadow overflow-hidden">
+        <thead class="bg-purple-200">
+          <tr>
+            <th class="p-3">Ev</th>
+            <th class="p-3">Konum</th>
+            <th class="p-3">Başlangıç</th>
+            <th class="p-3">Bitiş</th>
+            <th class="p-3">Durum</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for res in reservations %}
+            <tr class="border-b">
+              <td class="p-3">{{ res.HouseDescription }}</td>
+              <td class="p-3">{{ res.HouseLocation }}</td>
+              <td class="p-3">{{ res.StartDate.strftime("%d.%m.%Y") }}</td>
+              <td class="p-3">{{ res.EndDate.strftime("%d.%m.%Y") }}</td>
+              <td class="p-3">
+                {{ res.ReservationStatus }}
+                  {% if res.ReservationStatus == 'Confirmed' %}
+                    <button onclick="openCommentModal('{{ res.HouseId }}')" class="ml-2 bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">
+                        Yorum Ekle
+                    </button>
+                  {% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="5" class="p-3 text-center text-gray-500">Hiç rezervasyonunuz bulunmamaktadır.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Yorum Ekle Modal -->
+  <div id="commentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow w-full max-w-md relative">
+      <button onclick="closeCommentModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl font-bold">&times;</button>
+      <h2 class="text-xl font-bold mb-4">Yorum Ekle</h2>
+      <form method="POST" action="/tenant/add-comment" class="space-y-4">
+        <input type="hidden" name="house_id" id="comment_house_id">
+
+        <div>
+          <label class="block">Yorumunuz</label>
+          <textarea name="content" required class="w-full border rounded p-2"></textarea>
+        </div>
+
+        <div>
+            <label class="block">Puan (1-100)</label>
+            <input type="number" name="star" min="1" max="100" required class="w-full border rounded p-2">
+        </div>
+
+        <button type="submit" class="w-full bg-purple-700 text-white py-2 rounded hover:bg-purple-800">Yorumu Gönder</button>
+      </form>
+    </div>
+  </div>
+<script>
+    function openCommentModal(houseId) {
+        document.getElementById("comment_house_id").value = houseId;
+        document.getElementById("commentModal").classList.remove("hidden");
+        document.getElementById("commentModal").classList.add("flex");
+    }
+
+    function closeCommentModal() {
+        document.getElementById("commentModal").classList.remove("flex");
+        document.getElementById("commentModal").classList.add("hidden");
+    }
+</script>
+</body>
+</html>

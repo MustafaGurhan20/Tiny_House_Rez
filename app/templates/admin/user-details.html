@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kullanıcı Detayları</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Kullanıcı Bilgileri</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 text-gray-700">
+      <div><strong>Ad Soyad:</strong> {{ user.UserName }}</div>
+      <div><strong>Email:</strong> {{ user.Email }}</div>
+      <div><strong>Telefon:</strong> {{ user.PhoneNumber }}</div>
+      <div><strong>Adres:</strong> {{ user.Address }}</div>
+      <div><strong>Rol:</strong>
+        {% if user.UserRoleLevel == 0 %} Admin
+        {% elif user.UserRoleLevel == 1 %} Kiracı
+        {% elif user.UserRoleLevel == 2 %} Ev Sahibi
+        {% else %} Tanımsız
+        {% endif %}
+      </div>
+      <div><strong>Hesap Durumu:</strong> {{ "Aktif" if user.IsAccountActive else "Pasif" }}</div>
+      <div><strong>Kayıt Tarihi:</strong> {{ user.CreateDate.strftime('%d.%m.%Y') }}</div>
+    </div>
+
+    <h3 class="text-xl font-semibold text-gray-800 mb-3">Yaptığı Rezervasyonlar</h3>
+
+    {% if reservations %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left border border-gray-200">
+        <thead class="bg-gray-100 text-gray-700">
+          <tr>
+            <th class="px-4 py-2 border-b">Ev Açıklaması</th>
+            <th class="px-4 py-2 border-b">Adres</th>
+            <th class="px-4 py-2 border-b">Başlangıç</th>
+            <th class="px-4 py-2 border-b">Bitiş</th>
+            <th class="px-4 py-2 border-b">Durum</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in reservations %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="px-4 py-2">{{ r.HouseDescription }}</td>
+            <td class="px-4 py-2">{{ r.Address }}</td>
+            <td class="px-4 py-2">{{ r.StartDate.strftime('%d.%m.%Y') }}</td>
+            <td class="px-4 py-2">{{ r.EndDate.strftime('%d.%m.%Y') }}</td>
+            <td class="px-4 py-2">{{ r.ReservationStatus }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="text-gray-500 mt-2">Bu kullanıcıya ait rezervasyon bulunamadı.</p>
+    {% endif %}
+
+    <div class="flex flex-col sm:flex-row justify-between mt-8 gap-4">
+      <a href="/admin/user-management/{{ user.UserId }}/edit" class="inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+        Düzenle
+      </a>
+      <a href="/admin/user-management" class="inline-block text-blue-600 hover:underline">
+        ← Geri Dön
+      </a>
+    </div>
+  </div>
+</body>
+</html>

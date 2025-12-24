@@ -1,0 +1,82 @@
+<!-- admin-user-management.html -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kullanıcı Yönetimi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-blue-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Admin Paneli</h1>
+    <nav class="space-y-2">
+      <a href="/admin/dashboard" class="block hover:bg-blue-700 p-2 rounded">Dashboard</a>
+      <a href="/admin/user-management" class="block bg-blue-700 p-2 rounded">Kullanıcı Yönetimi</a>
+      <a href="/admin/reservations" class="block hover:bg-blue-700 p-2 rounded">Rezervasyon Yönetimi</a>
+      <a href="/admin/listings" class="block hover:bg-blue-700 p-2 rounded">İlan Yönetimi</a>
+      <a href="/admin/payments" class="block hover:bg-blue-700 p-2 rounded">Ödeme Yönetimi</a>
+      <a href="/admin/statistics" class="block hover:bg-blue-700 p-2 rounded">İstatistikler</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6">
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-4">Kullanıcı Listesi</h2>
+      <form method="get" action="/admin/user-management" class="mb-4">
+          <input
+            type="text"
+            name="q"
+            placeholder="Kullanıcı ara..."
+            value="{{ query or '' }}"
+            class="border p-2 w-full rounded"
+          />
+      </form>
+
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b text-gray-700">
+            <th class="py-2">Ad Soyad</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Durum</th>
+            <th>İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr class="border-b">
+            <td class="py-2">{{ user.UserName }}</td>
+            <td>{{ user.Email }}</td>
+            <td>
+              {% if user.UserRoleLevel == 0 %} Admin
+              {% elif user.UserRoleLevel == 1 %} Kiracı
+              {% elif user.UserRoleLevel == 2 %} Ev Sahibi
+              {% else %} Tanımsız
+              {% endif %}
+            </td>
+            <td>{{ "Aktif" if user.IsAccountActive else "Pasif" }}</td>
+            <td>
+              <a href="/admin/user-details/{{ user.UserId }}" class="text-blue-600 hover:underline">Detayları Göster</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+<script>
+  const searchInput = document.querySelector('input[name="q"]');
+
+  searchInput.addEventListener("input", function () {
+    if (this.value === "") {
+      window.location.href = "/admin/user-management";
+    }
+  });
+</script>
+
+</html>

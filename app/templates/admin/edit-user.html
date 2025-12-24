@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kullanıcı Düzenle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-semibold mb-4">Kullanıcıyı Düzenle</h2>
+
+    <form method="post" action="/admin/user-management/{{ user.UserId }}/edit">
+      <div class="grid grid-cols-1 gap-4 mb-4">
+        <div>
+          <label class="block font-medium mb-1">Ad Soyad</label>
+          <input type="text" name="UserName" value="{{ user.UserName }}" class="w-full border rounded px-3 py-2" required>
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Email</label>
+          <input type="email" name="Email" value="{{ user.Email }}" class="w-full border rounded px-3 py-2" required>
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Telefon</label>
+          <input type="text" name="PhoneNumber" value="{{ user.PhoneNumber }}" class="w-full border rounded px-3 py-2">
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Adres</label>
+          <textarea name="Address" class="w-full border rounded px-3 py-2" rows="2">{{ user.Address }}</textarea>
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Rol</label>
+          <select name="UserRoleLevel" class="w-full border rounded px-3 py-2">
+            <option value="0" {% if user.UserRoleLevel == 0 %}selected{% endif %}>Admin</option>
+            <option value="1" {% if user.UserRoleLevel == 1 %}selected{% endif %}>Kiracı</option>
+            <option value="2" {% if user.UserRoleLevel == 2 %}selected{% endif %}>Ev Sahibi</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Hesap Durumu</label>
+          <select name="IsAccountActive" class="w-full border rounded px-3 py-2">
+            <option value="true" {% if user.IsAccountActive %}selected{% endif %}>Aktif</option>
+            <option value="false" {% if not user.IsAccountActive %}selected{% endif %}>Pasif</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-between mt-6">
+        <a href="/admin/user-management" class="text-blue-600 hover:underline">← Geri Dön</a>
+        <div class="flex gap-4">
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+            Kaydet
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <form method="post" action="/admin/user-management/{{ user.UserId }}/delete" onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');" class="mt-4 text-right">
+      <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+        Kullanıcıyı Sil
+      </button>
+    </form>
+
+
+    </form>
+  </div>
+</body>
+</html>

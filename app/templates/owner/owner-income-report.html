@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gelir Raporu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-50">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-green-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Ev Sahibi</h1>
+    <nav class="space-y-2">
+      <a href="/owner/dashboard" class="block hover:bg-green-700 p-2 rounded">Ana Sayfa</a>
+      <a href="/owner/listings" class="block hover:bg-green-700 p-2 rounded">İlanlarım</a>
+      <a href="/owner/reservations" class="block hover:bg-green-700 p-2 rounded">Rezervasyonlar</a>
+      <a href="/owner/comments" class="block hover:bg-green-700 p-2 rounded">Yorumlar</a>
+      <a href="/owner/income-report" class="block bg-green-800 p-2 rounded">Gelir Raporu</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 space-y-8">
+
+    <h1 class="text-2xl font-bold mb-4">Gelir Raporu</h1>
+
+    <!-- Özet Kutuları -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white rounded shadow p-4">
+        <h2 class="text-sm text-gray-500 mb-1">Bu Ayki Gelir</h2>
+        <p class="text-2xl font-bold text-blue-600">₺{{ summary.this_month }}</p>
+      </div>
+      <div class="bg-white rounded shadow p-4">
+        <h2 class="text-sm text-gray-500 mb-1">Geçen Ayki Gelir</h2>
+        <p class="text-2xl font-bold text-indigo-600">₺{{ summary.last_month }}</p>
+      </div>
+      <div class="bg-white rounded shadow p-4">
+        <h2 class="text-sm text-gray-500 mb-1">Toplam Gelir</h2>
+        <p class="text-2xl font-bold text-green-700">₺{{ summary.total }}</p>
+      </div>
+    </section>
+
+    <!-- Aylık Gelir Tablosu -->
+    <section class="bg-white rounded shadow p-4">
+      <h2 class="text-xl font-semibold mb-4">Aylık Gelir Geçmişi</h2>
+      {% if history %}
+        <table class="min-w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b">
+              <th class="py-2 px-4">Ay</th>
+              <th class="py-2 px-4">Gelir (₺)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in history %}
+              <tr class="border-b hover:bg-gray-50">
+                <td class="py-2 px-4">{{ row.month }}</td>
+                <td class="py-2 px-4">{{ row.total }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="text-gray-500">Henüz gelir verisi bulunmuyor.</p>
+      {% endif %}
+    </section>
+    <section class="bg-white rounded shadow p-4">
+      <h2 class="text-xl font-semibold mb-4">Gelir Grafiği (Son Aylar)</h2>
+      <canvas id="incomeChart" width="400" height="200"></canvas>
+    </section>
+
+  </main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const labels = {{ history | map(attribute="month") | list | tojson }};
+  const data = {{ history | map(attribute="total") | list | tojson }};
+
+  const ctx = document.getElementById('incomeChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels.reverse(), // En eski ay sola, en yeni ay sağa
+      datasets: [{
+        label: 'Aylık Gelir (₺)',
+        data: data.reverse(),
+        fill: true,
+        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+        borderColor: 'rgba(16, 185, 129, 1)',
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: value => '₺' + value
+          }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Paneli</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-blue-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Admin Paneli</h1>
+    <nav class="space-y-2">
+      <a href="/admin/dashboard" class="block bg-blue-700 p-2 rounded">Dashboard</a>
+      <a href="/admin/user-management" class="block hover:bg-blue-700 p-2 rounded">Kullanıcı Yönetimi</a>
+      <a href="/admin/reservations" class="block hover:bg-blue-700 p-2 rounded">Rezervasyon Yönetimi</a>
+      <a href="/admin/listings" class="block hover:bg-blue-700 p-2 rounded">İlan Yönetimi</a>
+      <a href="/admin/payments" class="block hover:bg-blue-700 p-2 rounded">Ödeme Yönetimi</a>
+      <a href="/admin/statistics" class="block hover:bg-blue-700 p-2 rounded">İstatistikler</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6 space-y-6">
+    <!-- Profil Kartı -->
+    <div class="bg-white rounded shadow p-4 flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-semibold">{{ admin_name }}</h2>
+        <p class="text-sm text-gray-600">{{ admin_email }}</p>
+      </div>
+    </div>
+
+
+    <!-- Üst Kartlar -->
+    <section class="grid grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold">Toplam Kullanıcı</h2>
+        <p class="text-2xl font-bold text-blue-700">{{ total_users }}</p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold">Aktif Rezervasyonlar</h2>
+        <p class="text-2xl font-bold text-green-600">{{ active_reservations }}</p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold">Aylık Gelir</h2>
+        <p class="text-2xl font-bold text-indigo-600">₺{{ monthly_income }}</p>
+      </div>
+    </section>
+
+    <!-- Son Kayıt Olan Kullanıcılar -->
+    <section class="bg-white p-4 rounded shadow">
+      <h3 class="text-xl font-semibold mb-4">Son Kayıt Olan Kullanıcılar</h3>
+      <ul class="space-y-2">
+        {% for user in recent_users %}
+          <li class="flex justify-between border-b pb-2">
+            <span>{{ user.UserName }} ({{ user.Email }})</span>
+            <span class="text-sm text-gray-500">{{ user.CreateDateFormatted }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- Son 5 Ödeme -->
+    <section class="bg-white p-4 rounded shadow">
+      <h3 class="text-xl font-semibold mb-4">Son 5 Ödeme</h3>
+      <ul class="space-y-2">
+        {% for payment in recent_payments %}
+          <li class="flex justify-between border-b pb-2">
+            <span>₺{{ payment.Amount }}</span>
+            <span class="text-sm text-gray-500">{{ payment.PaymentDateFormatted }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- Yaklaşan Rezervasyonlar -->
+    <section class="bg-white p-4 rounded shadow">
+      <h3 class="text-xl font-semibold mb-4">Yaklaşan Rezervasyonlar</h3>
+      <ul class="space-y-2">
+        {% for r in upcoming_reservations %}
+          <li class="flex justify-between border-b pb-2">
+            <span>{{ r.UserName }} - {{ r.HouseDescription }}</span>
+            <span class="text-sm text-gray-500">{{ r.StartDateFormatted }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+  </main>
+</body>
+</html>

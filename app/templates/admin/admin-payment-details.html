@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ödeme Detayı - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-blue-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Admin Paneli</h1>
+    <nav class="space-y-2">
+      <a href="/admin/dashboard" class="block hover:bg-blue-700 p-2 rounded">Dashboard</a>
+      <a href="/admin/user-management" class="block hover:bg-blue-700 p-2 rounded">Kullanıcı Yönetimi</a>
+      <a href="/admin/reservations" class="block hover:bg-blue-700 p-2 rounded">Rezervasyon Yönetimi</a>
+      <a href="/admin/listings" class="block hover:bg-blue-700 p-2 rounded">İlan Yönetimi</a>
+      <a href="/admin/payments" class="block bg-blue-700 p-2 rounded">Ödeme Yönetimi</a>
+      <a href="/admin/statistics" class="block hover:bg-blue-700 p-2 rounded">İstatistikler</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6 space-y-6">
+
+    <h2 class="text-2xl font-bold mb-4">Ödeme Detayı</h2>
+
+    <section class="bg-white p-6 rounded shadow space-y-4">
+
+      <p><strong>Kullanıcı:</strong> {{ payment.TenantName }} ({{ payment.TenantEmail }})</p>
+      <p><strong>Ev:</strong> {{ payment.HouseDescription }} - {{ payment.HouseLocation }}</p>
+      <p><strong>Tutar:</strong> ₺{{ payment.Amount }}</p>
+      <p><strong>Tarih:</strong> {{ payment.PaymentDate.strftime("%d.%m.%Y") }}</p>
+      <p><strong>Durum:</strong> {{ payment.PaymentStatus }}</p>
+      <p><strong>Ödeme Yöntemi:</strong> {{ payment.PaymentMethod }}</p>
+
+      <div class="flex space-x-4 mt-6">
+        <a href="/admin/payments" class="bg-gray-600 text-white px-4 py-2 rounded">Geri</a>
+      </div>
+
+    </section>
+
+  </main>
+</body>
+</html>

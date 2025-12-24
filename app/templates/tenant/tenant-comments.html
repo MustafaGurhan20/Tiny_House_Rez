@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yorumlarım</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-purple-800 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Kiracı</h1>
+    <nav class="space-y-2">
+      <a href="/tenant/dashboard" class="block hover:bg-purple-600 p-2 rounded">Anasayfa</a>
+      <a href="/tenant/explore" class="block hover:bg-purple-600 p-2 rounded">Ev Ara</a>
+      <a href="/tenant/reservations" class="block hover:bg-purple-600 p-2 rounded">Rezervasyonlarım</a>
+      <a href="/tenant/comments" class="block bg-purple-700 p-2 rounded">Yorumlarım</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6 space-y-6">
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Yorumlarım</h2>
+
+      {% if comments %}
+      <table class="w-full text-left bg-white rounded shadow overflow-hidden">
+        <thead class="bg-purple-200">
+          <tr>
+            <th class="p-3">Ev</th>
+            <th class="p-3">Yorum</th>
+            <th class="p-3">Yıldız</th>
+            <th class="p-3">Tarih</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for comment in comments %}
+          <tr class="border-b">
+            <td class="p-3">{{ comment.HouseDescription }}</td>
+            <td class="p-3 italic text-gray-700">"{{ comment.Content }}"</td>
+            <td class="p-3">{{ comment.Star }} ★</td>
+            <td class="p-3">{{ comment.Date }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="text-gray-500">Henüz yorum yapmadınız.</p>
+      {% endif %}
+    </section>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+fastapi~=0.115.12
+uvicorn
+jinja2
+pyodbc~=5.2.0
+python-multipart
+starlette~=0.46.2
+pydantic~=2.11.5

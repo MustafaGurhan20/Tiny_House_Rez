@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ev Ara</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100 min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-purple-800 text-white p-4">
+    <h1 class="text-2xl font-bold mb-6">Kiracı</h1>
+    <nav class="space-y-2">
+      <a href="/tenant/dashboard" class="block hover:bg-purple-600 p-2 rounded">Anasayfa</a>
+      <a href="/tenant/explore" class="block bg-purple-700 p-2 rounded">Ev Ara</a>
+      <a href="/tenant/reservations" class="block hover:bg-purple-600 p-2 rounded">Rezervasyonlarım</a>
+      <a href="/tenant/comments" class="block hover:bg-purple-600 p-2 rounded">Yorumlarım</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <h2 class="text-2xl font-bold mb-4">Ev Ara</h2>
+
+    <!-- Arama Alanı -->
+    <form method="get" action="/tenant/explore" class="mb-6">
+      <input
+        type="text"
+        name="q"
+        value="{{ query or '' }}"
+        placeholder="Ev açıklaması veya konum ara..."
+        class="w-full p-3 border border-gray-300 rounded"
+      >
+    </form>
+
+    {% if alert %}
+      <div class="bg-yellow-100 text-yellow-800 border border-yellow-300 p-4 mb-4 rounded">
+        {{ alert }}
+      </div>
+    {% endif %}
+
+    <!-- Ev Kartları -->
+    {% if houses %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for house in houses %}
+          <div class="bg-white rounded shadow p-4 flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-purple-800 mb-2">{{ house.HouseDescription }}</h3>
+              <p class="text-gray-600">{{ house.HouseLocation }}</p>
+              <p class="text-gray-800 font-medium mt-2">₺{{ house.Price }} / gece</p>
+              <div class="mt-3 text-sm text-yellow-600">
+                ⭐ {{ house.HouseAvgStar }} puan
+              </div>
+            </div>
+            <button onclick="openModal('{{ house.HouseId }}')"
+              class="mt-4 bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800 w-full">
+              Rezervasyon Yap
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500">Hiçbir ev bulunamadı.</p>
+    {% endif %}
+  </main>
+
+  <!-- Rezervasyon Modal -->
+  <div id="reservationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow w-full max-w-md relative">
+      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl font-bold">&times;</button>
+      <h2 class="text-xl font-bold mb-4">Rezervasyon Yap</h2>
+      <form method="POST" action="/tenant/reserve" id="reservationForm" class="space-y-4">
+        <input type="hidden" name="house_id" id="modal_house_id">
+
+        <div>
+          <label class="block">Giriş Tarihi</label>
+          <input type="date" name="start_date" required class="w-full border rounded p-2">
+        </div>
+        <div>
+          <label class="block">Çıkış Tarihi</label>
+          <input type="date" name="end_date" required class="w-full border rounded p-2">
+        </div>
+        <div>
+          <label class="block">Kart Üzerindeki İsim</label>
+          <input type="text" name="card_name" required class="w-full border rounded p-2">
+        </div>
+        <div>
+          <label class="block">Kart Numarası</label>
+          <input type="text" name="card_number" required class="w-full border rounded p-2">
+        </div>
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <label class="block">Son Kullanma</label>
+            <input type="text" name="exp_date" placeholder="MM/YY" required class="w-full border rounded p-2">
+          </div>
+          <div class="flex-1">
+            <label class="block">CVC</label>
+            <input type="text" name="cvc" required class="w-full border rounded p-2">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-purple-700 text-white py-2 rounded hover:bg-purple-800">Rezervasyonu Tamamla</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openModal(houseId) {
+      document.getElementById("modal_house_id").value = parseInt(houseId);
+      document.getElementById("reservationModal").classList.remove("hidden");
+      document.getElementById("reservationModal").classList.add("flex");
+    }
+
+    function closeModal() {
+      document.getElementById("reservationModal").classList.remove("flex");
+      document.getElementById("reservationModal").classList.add("hidden");
+    }
+
+    const searchInput = document.querySelector('input[name="q"]');
+    searchInput.addEventListener("input", function () {
+      if (this.value === "") {
+        window.location.href = "/tenant/explore";
+      }
+    });
+  </script>
+</body>
+</html>

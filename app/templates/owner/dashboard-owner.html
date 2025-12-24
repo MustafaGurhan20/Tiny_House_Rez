@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ev Sahibi Paneli</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-50">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-green-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Ev Sahibi</h1>
+    <nav class="space-y-2">
+      <a href="/owner/dashboard" class="block bg-green-800 p-2 rounded">Ana Sayfa</a>
+      <a href="/owner/listings" class="block hover:bg-green-700 p-2 rounded">İlanlarım</a>
+      <a href="/owner/reservations" class="block hover:bg-green-700 p-2 rounded">Rezervasyonlar</a>
+      <a href="/owner/comments" class="block hover:bg-green-700 p-2 rounded">Yorumlar</a>
+      <a href="/owner/income-report" class="block hover:bg-green-700 p-2 rounded">Gelir Raporu</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6 space-y-6">
+
+    <!-- Profil Kartı -->
+    <div class="bg-white rounded shadow p-4 flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-semibold">{{ owner_name }}</h2>
+        <p class="text-sm text-gray-600">{{ owner_email }}</p>
+      </div>
+    </div>
+
+    <!-- İstatistik Kutuları -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white h-28 p-4 rounded shadow">
+        <h2 class="text-sm font-medium text-gray-600">Toplam İlan</h2>
+        <p class="text-2xl font-bold text-green-700">{{ total_listings }}</p>
+      </div>
+      <div class="bg-white h-28 p-4 rounded shadow">
+        <h2 class="text-sm font-medium text-gray-600">Aktif İlan</h2>
+        <p class="text-2xl font-bold text-green-700">{{ active_listings }}</p>
+      </div>
+      <div class="bg-white h-28 p-4 rounded shadow">
+        <h2 class="text-sm font-medium text-gray-600">Pasif İlan</h2>
+        <p class="text-2xl font-bold text-red-500">{{ passive_listings }}</p>
+      </div>
+      <div class="bg-white h-28 p-4 rounded shadow">
+        <h2 class="text-sm font-medium text-gray-600">Bu Ayki Gelir</h2>
+        <p class="text-2xl font-bold text-blue-600">₺{{ monthly_income }}</p>
+      </div>
+    </section>
+
+    <!-- Gelir Özeti -->
+    <section class="bg-white p-4 rounded shadow">
+      <h3 class="text-xl font-semibold mb-2">Toplam Gelir</h3>
+      <p class="text-3xl font-bold text-green-700">₺{{ total_income }}</p>
+    </section>
+
+    <!-- Son Yorumlar -->
+    <section class="bg-white p-4 rounded shadow">
+      <h3 class="text-xl font-semibold mb-4">Son Yorumlar</h3>
+      {% if recent_comments %}
+        <ul class="space-y-3">
+          {% for comment in recent_comments %}
+            <li class="border-b pb-2">
+              <p class="text-gray-700 italic">"{{ comment.Content }}"</p>
+              <p class="text-sm text-gray-500">Yıldız: {{ comment.Star }} ★ - {{ comment.Date }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-gray-500">Henüz yorum yok.</p>
+      {% endif %}
+    </section>
+
+    <!-- Mini Grafik (opsiyonel) -->
+    <!-- Eğer gelir grafiği eklenecekse Chart.js entegre edilebilir -->
+    <!-- İstenirse buraya ek grafik komponenti de koyabilirim -->
+
+  </main>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rezervasyon Yönetimi - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-blue-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Admin Paneli</h1>
+    <nav class="space-y-2">
+      <a href="/admin/dashboard" class="block hover:bg-blue-700 p-2 rounded">Dashboard</a>
+      <a href="/admin/user-management" class="block hover:bg-blue-700 p-2 rounded">Kullanıcı Yönetimi</a>
+      <a href="/admin/reservations" class="block bg-blue-700 p-2 rounded">Rezervasyon Yönetimi</a>
+      <a href="/admin/listings" class="block hover:bg-blue-700 p-2 rounded">İlan Yönetimi</a>
+      <a href="/admin/payments" class="block hover:bg-blue-700 p-2 rounded">Ödeme Yönetimi</a>
+      <a href="/admin/statistics" class="block hover:bg-blue-700 p-2 rounded">İstatistikler</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6 space-y-6">
+
+    <h2 class="text-2xl font-bold mb-4">Rezervasyon Yönetimi</h2>
+
+    <!-- Filtre Butonları -->
+    <div class="flex space-x-2 mb-4">
+      <a href="/admin/reservations" class="px-3 py-1 bg-blue-700 text-white rounded {{ 'bg-blue-900' if current_status == 'Tümü' else '' }}">Tümü</a>
+      <a href="/admin/reservations?status=Pending" class="px-3 py-1 bg-yellow-600 text-white rounded {{ 'bg-yellow-800' if current_status == 'Pending' else '' }}">Bekleyen</a>
+      <a href="/admin/reservations?status=Confirmed" class="px-3 py-1 bg-green-600 text-white rounded {{ 'bg-green-800' if current_status == 'Confirmed' else '' }}">Onaylı</a>
+      <a href="/admin/reservations?status=Rejected" class="px-3 py-1 bg-red-600 text-white rounded {{ 'bg-red-800' if current_status == 'Rejected' else '' }}">Reddedilen</a>
+    </div>
+
+    <!-- Tabloda rezervasyonlar -->
+    <table class="w-full text-left bg-white rounded shadow overflow-hidden">
+      <thead class="bg-blue-200">
+        <tr>
+          <th class="p-3">Ev</th>
+          <th class="p-3">Kiracı</th>
+          <th class="p-3">Ev Sahibi</th>
+          <th class="p-3">Başlangıç</th>
+          <th class="p-3">Bitiş</th>
+          <th class="p-3">Durum</th>
+          <th class="p-3">İşlem</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for res in reservations %}
+        <tr class="border-b">
+          <td class="p-3">{{ res.HouseDescription }}</td>
+          <td class="p-3">{{ res.TenantName }}</td>
+          <td class="p-3">{{ res.OwnerName }}</td>
+          <td class="p-3">{{ res.StartDate.strftime("%d.%m.%Y") }}</td>
+          <td class="p-3">{{ res.EndDate.strftime("%d.%m.%Y") }}</td>
+          <td class="p-3">{{ res.ReservationStatus }}</td>
+          <td class="p-3 flex gap-2">
+            <a href="/admin/reservations/{{ res.ReservationId }}" class="bg-blue-600 text-white px-2 py-1 rounded text-sm">Detay</a>
+            <form method="post" action="/admin/reservations/{{ res.ReservationId }}/delete" onsubmit="return confirm('Bu rezervasyonu silmek istediğinize emin misiniz?');">
+              <button type="submit" class="bg-red-600 text-white px-2 py-1 rounded text-sm">Sil</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="p-3 text-center text-gray-500">Hiç rezervasyon bulunmamaktadır.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </main>
+</body>
+</html>

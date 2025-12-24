@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rezervasyonlar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-50">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-green-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Ev Sahibi</h1>
+    <nav class="space-y-2">
+      <a href="/owner/dashboard" class="block hover:bg-green-700 p-2 rounded">Ana Sayfa</a>
+      <a href="/owner/listings" class="block hover:bg-green-700 p-2 rounded">İlanlarım</a>
+      <a href="/owner/reservations" class="block bg-green-800 p-2 rounded">Rezervasyonlar</a>
+      <a href="/owner/comments" class="block hover:bg-green-700 p-2 rounded">Yorumlar</a>
+      <a href="/owner/income-report" class="block hover:bg-green-700 p-2 rounded">Gelir Raporu</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6 space-y-6">
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Rezervasyonlarım</h2>
+
+      <table class="w-full text-left bg-white rounded shadow overflow-hidden">
+        <thead class="bg-green-200">
+          <tr>
+            <th class="p-3">Ev</th>
+            <th class="p-3">Kiracı</th>
+            <th class="p-3">Başlangıç</th>
+            <th class="p-3">Bitiş</th>
+            <th class="p-3">Durum</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for res in reservations %}
+          <tr class="border-b">
+            <td class="p-3">{{ res.HouseDescription }}</td>
+            <td class="p-3">{{ res.TenantName }}</td>
+            <td class="p-3">{{ res.StartDate.strftime("%d.%m.%Y") }}</td>
+            <td class="p-3">{{ res.EndDate.strftime("%d.%m.%Y") }}</td>
+            <td class="p-3">
+              {% if res.ReservationStatus == 'Confirmed' %}
+                <span class="text-green-600 font-semibold">Onaylandı</span>
+              {% elif res.ReservationStatus == 'Rejected' %}
+                <span class="text-red-600 font-semibold">Reddedildi</span>
+              {% elif res.ReservationStatus == 'Pending' %}
+                <span class="text-yellow-600 font-semibold">Bekliyor</span>
+                <div class="flex gap-2 mt-2">
+                  <!-- Approve -->
+                  <form method="post" action="/owner/reservations/{{ res.ReservationId }}/approve">
+                    <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm">Onayla</button>
+                  </form>
+                  <!-- Reject -->
+                  <form method="post" action="/owner/reservations/{{ res.ReservationId }}/reject">
+                    <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm">Reddet</button>
+                      </form>
+                </div>
+              {% else %}
+                {{ res.ReservationStatus }}
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="p-3 text-center text-gray-500">Henüz rezervasyon bulunmamaktadır.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+</body>
+</html>

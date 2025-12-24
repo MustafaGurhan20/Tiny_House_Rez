@@ -1,0 +1,42 @@
+<!-- templates/edit-listing.html -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>İlan Düzenle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-bold mb-4">İlanı Düzenle</h2>
+    <form action="/owner/listings/{{ house.HouseId }}/edit" method="post" class="space-y-4">
+      <div>
+        <label class="block font-semibold">Konum</label>
+        <input type="text" name="location" value="{{ house.HouseLocation }}" class="w-full p-2 border rounded" required>
+      </div>
+      <div>
+        <label class="block font-semibold">Fiyat (₺)</label>
+        <input type="number" step="0.01" name="price" value="{{ house.Price }}" class="w-full p-2 border rounded" required>
+      </div>
+      <div>
+        <label class="block font-semibold">Açıklama</label>
+        <textarea name="description" class="w-full p-2 border rounded" required>{{ house.HouseDescription }}</textarea>
+      </div>
+      <div class="flex items-center space-x-4">
+        <label>
+          <input type="checkbox" name="is_available" value="1" {% if house.IsAvailable %}checked{% endif %}>
+          Müsait
+        </label>
+        <label>
+          <input type="checkbox" name="is_active" value="1" {% if house.IsHouseActive %}checked{% endif %}>
+          Aktif
+        </label>
+      </div>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Kaydet</button>
+    </form>
+      <form action="/owner/listings/{{ house.HouseId }}/delete" method="post" onsubmit="return confirm('Bu ilanı silmek istediğinize emin misiniz?');">
+        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4">İlanı Sil</button>
+      </form>
+  </div>
+</body>
+</html>

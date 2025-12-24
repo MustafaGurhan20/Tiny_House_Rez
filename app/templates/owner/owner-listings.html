@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>İlanlarım</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-50">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-green-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Ev Sahibi</h1>
+    <nav class="space-y-2">
+      <a href="/owner/dashboard" class="block hover:bg-green-700 p-2 rounded">Ana Sayfa</a>
+      <a href="/owner/listings" class="block bg-green-800 p-2 rounded">İlanlarım</a>
+      <a href="/owner/reservations" class="block hover:bg-green-700 p-2 rounded">Rezervasyonlar</a>
+      <a href="/owner/comments" class="block hover:bg-green-700 p-2 rounded">Yorumlar</a>
+      <a href="/owner/income-report" class="block hover:bg-green-700 p-2 rounded">Gelir Raporu</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold">İlanlarım</h2>
+      <a href="/owner/listings/new" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Yeni İlan Ekle</a>
+    </div>
+
+    <div class="bg-white rounded shadow p-4 space-y-4">
+      {% if listings %}
+        {% for listing in listings %}
+        <div class="border rounded p-4 flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-bold">{{ listing.HouseDescription }}</h3>
+            <p>{{ listing.Price }} ₺ / gece</p>
+          </div>
+          <div class="flex gap-2">
+            <a href="/owner/listings/{{ listing.HouseId }}/edit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Düzenle</a>
+            {% if listing.IsHouseActive == "1" or listing.IsHouseActive == 1 %}
+              <form action="/owner/listings/{{ listing.HouseId }}/deactivate" method="post">
+                <button type="submit" class="bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700">Pasif Yap</button>
+              </form>
+            {% else %}
+              <form action="/owner/listings/{{ listing.HouseId }}/activate" method="post">
+                <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Aktif Yap</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-gray-500">Henüz herhangi bir ilanınız bulunmamaktadır.</p>
+      {% endif %}
+    </div>
+  </main>
+</body>
+</html>

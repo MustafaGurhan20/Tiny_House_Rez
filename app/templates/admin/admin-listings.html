@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>İlan Yönetimi - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-blue-900 text-white min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Admin Paneli</h1>
+    <nav class="space-y-2">
+      <a href="/admin/dashboard" class="block hover:bg-blue-700 p-2 rounded">Dashboard</a>
+      <a href="/admin/user-management" class="block hover:bg-blue-700 p-2 rounded">Kullanıcı Yönetimi</a>
+      <a href="/admin/reservations" class="block hover:bg-blue-700 p-2 rounded">Rezervasyon Yönetimi</a>
+      <a href="/admin/listings" class="block bg-blue-700 p-2 rounded">İlan Yönetimi</a>
+      <a href="/admin/payments" class="block hover:bg-blue-700 p-2 rounded">Ödeme Yönetimi</a>
+      <a href="/admin/statistics" class="block hover:bg-blue-700 p-2 rounded">İstatistikler</a>
+      <a href="/" class="block bg-red-600 hover:bg-red-700 text-white p-2 rounded text-center mt-6">Çıkış Yap</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="flex-1 p-6 space-y-6">
+
+    <h2 class="text-2xl font-bold mb-4">İlan Yönetimi</h2>
+
+    <!-- Tabloda ilanlar -->
+    <table class="w-full text-left bg-white rounded shadow overflow-hidden">
+      <thead class="bg-blue-200">
+        <tr>
+          <th class="p-3">Ev</th>
+          <th class="p-3">Konum</th>
+          <th class="p-3">Fiyat</th>
+          <th class="p-3">Durum</th>
+          <th class="p-3">Ev Sahibi</th>
+          <th class="p-3">İşlem</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for listing in listings %}
+        <tr class="border-b">
+          <td class="p-3">{{ listing.HouseDescription }}</td>
+          <td class="p-3">{{ listing.HouseLocation }}</td>
+          <td class="p-3">₺{{ listing.Price }}</td>
+          <td class="p-3">
+            {% if listing.IsHouseActive %}
+              <span class="text-green-600 font-semibold">Aktif</span>
+            {% else %}
+              <span class="text-red-600 font-semibold">Pasif</span>
+            {% endif %}
+          </td>
+          <td class="p-3">{{ listing.OwnerName }}</td>
+          <td class="p-3 flex gap-2">
+            <a href="/admin/listings/{{ listing.HouseId }}" class="bg-blue-600 text-white px-2 py-1 rounded text-sm">Detay</a>
+            <form method="post" action="/admin/listings/{{ listing.HouseId }}/delete" onsubmit="return confirm('Bu ilanı silmek istediğinize emin misiniz?');">
+              <button type="submit" class="bg-red-600 text-white px-2 py-1 rounded text-sm">Sil</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" class="p-3 text-center text-gray-500">Hiç ilan bulunmamaktadır.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </main>
+</body>
+</html>
